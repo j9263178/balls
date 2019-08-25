@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>balls.js</title>
 </head>
 <body>
 
@@ -22,7 +22,7 @@
 <body>
 
 <canvas id="C1" width="800" height="600"></canvas>
-
+<h1><td align="center">上下左右</td></h1>
 <script>
 
     var balls =[];
@@ -68,16 +68,17 @@
 
      for(let ball of balls) {
 
-         //if (ball.online) {
+         if (ball.online) {
              ctx.beginPath();
              ctx.arc(ball.x, ball.y, ball.size, 0, Math.PI * 2);
-             ctx.fillStyle = "#ffca00";
+             ctx.fillStyle = ball.color;
              ctx.fill();
              ctx.closePath();
              ctx.fillStyle = "#fff6fc";
              ctx.font = "20pt Arial";
-             ctx.fillText("balls[" + ball.id + "]", ball.x - 50, ball.y - 50);
-         //}
+          //   ctx.fillText("balls[" + ball.id + "]", ball.x - 50, ball.y - 50);
+             ctx.fillText("" + ball.sid , ball.x - 70, ball.y - 50);
+         }
 
      }
     }
@@ -133,19 +134,28 @@
 
     var mypos=0;
 
+    var getRandomColor = function(){
+        return  '#' +
+            (function(color){
+                return (color +=  '0123456789abcdef'[Math.floor(Math.random()*16)])
+                && (color.length == 6) ?  color : arguments.callee(color);
+            })('');
+    }
 
     function getRandom(min,max){
         return Math.floor(Math.random()*(max-min+1))+min;
     };
 
     var x = getRandom(100,700),y = getRandom(100,500),size=getRandom(30,60);
+    var color=getRandomColor()
     var dx = 0 , dy=0;
+
 
 
 
     var socket = io.connect();
 
-    socket.emit('new', {'x':x,'y':y,'size':size});
+    socket.emit('new', {'x':x,'y':y,'size':size,'color':color});
 
     socket.on('pos', function(data){
         mypos = data.pos;
@@ -164,7 +174,6 @@
             if(done) {socket.emit('client_data', {'id': mypos, 'x': x, 'y': y, 'dx': dx, 'dy': dy});}
             else{console.log("FUCK!")}
     }
-
     setInterval(send, 12);
 
 
