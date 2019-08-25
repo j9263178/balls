@@ -95,7 +95,7 @@ const func = function(socket) {
 
     setInterval(function () {
         socket.emit('balls', {'balls': balls});
-    }, 100);
+    }, 10);
 
     socket.on('client_data', function(data) {
         balls[data.id].x=data.x;

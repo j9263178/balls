@@ -83,7 +83,7 @@
     }, 1);
 
 
-    setInterval(draw, 13);
+    setInterval(draw, 10);
 
     document.addEventListener("keydown", keyDownHandler, false);
     document.addEventListener("keyup", keyUpHandler, false);
@@ -154,7 +154,7 @@
 
     setInterval(function () {
         socket.emit('client_data', {'id':pos,'x':x,'y':y,'dx':dx,'dy':dy});
-    }, 15);
+    }, 10);
 
 </script>
 
