@@ -67,14 +67,19 @@
         }*/
 
      for(let ball of balls) {
-         ctx.beginPath();
-         ctx.arc(ball.x, ball.y, ball.size, 0, Math.PI * 2);
-         ctx.fillStyle = "#ffca00";
-         ctx.fill();
-         fill = ctx.fill();
-         ctx.closePath();
-     }
 
+         //if (ball.online) {
+             ctx.beginPath();
+             ctx.arc(ball.x, ball.y, ball.size, 0, Math.PI * 2);
+             ctx.fillStyle = "#ffca00";
+             ctx.fill();
+             ctx.closePath();
+             ctx.fillStyle = "#fff6fc";
+             ctx.font = "20pt Arial";
+             ctx.fillText("balls[" + ball.id + "]", ball.x - 50, ball.y - 50);
+         //}
+
+     }
     }
 
     setInterval(function update(){
@@ -83,7 +88,7 @@
     }, 1);
 
 
-    setInterval(draw, 10);
+    setInterval(draw, 12);
 
     document.addEventListener("keydown", keyDownHandler, false);
     document.addEventListener("keyup", keyUpHandler, false);
@@ -126,7 +131,7 @@
     var canva1=document.getElementById("C1");
     var ctx=canva1.getContext("2d");
 
-    var pos=0;
+    var mypos=0;
 
 
     function getRandom(min,max){
@@ -143,18 +148,29 @@
     socket.emit('new', {'x':x,'y':y,'size':size});
 
     socket.on('pos', function(data){
-        pos = data.pos;
+        mypos = data.pos;
         console.log(data.pos);
     });
+
+    var done=false;
 
     socket.on('balls', function(data){
         balls = data.balls;
       //  console.log(balls);
+    done=true;
     });
 
-    setInterval(function () {
-        socket.emit('client_data', {'id':pos,'x':x,'y':y,'dx':dx,'dy':dy});
-    }, 10);
+    send = function () {
+            if(done) {socket.emit('client_data', {'id': mypos, 'x': x, 'y': y, 'dx': dx, 'dy': dy});}
+            else{console.log("FUCK!")}
+    }
+
+    setInterval(send, 12);
+
+
+
+
+
 
 </script>
 

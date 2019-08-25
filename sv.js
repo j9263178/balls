@@ -54,7 +54,9 @@ server.listen(8001);
 io.listen(server); // 開啟 Socket.IO 的 listener
 
 
-var ball = function (x, y,size) {
+var ball = function (id,x, y,size) {
+    this.online=true;
+    this.id=id;
     this.dx=0;
     this.dy=0;
     this.ddx=0;
@@ -80,28 +82,35 @@ var ball = function (x, y,size) {
 };
 
 var balls=[];
-
-
-
+var index=0;
 var serv_io = io.listen(server);
+var clints= {};
 
 const func = function(socket) {
+    clints[socket]=index;
+    index+=1;
     socket.emit('message', {'message': 'From server: security guard.'});
     socket.emit('pos', {'pos': balls.length});
 
     socket.on('new', function(data) {
-        balls.push(new ball(data.x,data.y,data.size));
+        balls.push(new ball(balls.length,data.x,data.y,data.size));
     });
 
     setInterval(function () {
         socket.emit('balls', {'balls': balls});
-    }, 10);
+    }, 12);
 
     socket.on('client_data', function(data) {
         balls[data.id].x=data.x;
         balls[data.id].y=data.y;
         balls[data.id].dx=data.dx;
         balls[data.id].dy=data.dy;
+    });
+
+    socket.on('disconnect', function() {
+       // var i = allClients.indexOf(socket);
+        console.log('Got disconnect! index : '+clints[socket]);
+        balls[clints[socket]].online=false;
     });
 };
 
