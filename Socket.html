@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="/socket.io/socket.io.js"></script>
+
+</head>
+<body>
+<script>
+    var socket = io.connect();
+
+    socket.on('message', function(data){
+        console.log(data.message);
+    });
+
+    socket.on('date', function(data) {
+        console.log(data.date);
+    });
+
+</script>
+<div>This is our socket.</div>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+</html><!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>asshole</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        * { padding: 0; margin: 0; }
+        canvas { background: #363c45; display: block; margin: 0 auto; }
+    </style>
+
+</head>
+<body>
+
+<canvas id="C1" width="800" height="600"></canvas>
+
+<script>
+
+    var balls =[];
+
+    function getInput() {
+        if(leftPressed || rightPressed || UpPressed || DownPressed){
+            if(rightPressed){
+                dx=5;
+            }
+            if(leftPressed) {
+                dx=-5;
+            }
+            if(UpPressed){
+                dy=-5;
+            }
+            if(DownPressed) {
+                dy=5;
+            }
+
+        }else{ dx =0 ; dy = 0;}
+    }
+
+    function draw() {
+        ctx.clearRect(0, 0, canva1.width, canva1.height);
+
+        ctx.beginPath();
+        ctx.rect(100, 100, 120, 120);
+        ctx.fillStyle = "#ff80f3";
+        fill = ctx.fill();
+        ctx.closePath();
+
+        ctx.beginPath();
+        ctx.rect(160, 200, 100, 170);
+        ctx.fillStyle = "#416dff";
+        fill = ctx.fill();
+        ctx.closePath();
+
+        getInput();
+
+     /*   for(let ball of balls){
+            ball.draw();
+        }*/
+
+     for(let ball of balls) {
+         ctx.beginPath();
+         ctx.arc(ball.x, ball.y, ball.size, 0, Math.PI * 2);
+         ctx.fillStyle = "#ffca00";
+         ctx.fill();
+         fill = ctx.fill();
+         ctx.closePath();
+     }
+
+    }
+
+    setInterval(function update(){
+        x+=0.3*dx;
+        y+=0.3*dy;
+    }, 1);
+
+
+    setInterval(draw, 13);
+
+    document.addEventListener("keydown", keyDownHandler, false);
+    document.addEventListener("keyup", keyUpHandler, false);
+
+    var rightPressed = false;
+    var leftPressed = false;
+    var DownPressed = false;
+    var UpPressed = false;
+
+    function keyDownHandler(e) {
+        if(e.key === "Right" || e.key === "ArrowRight") {
+            rightPressed = true;
+        }
+        else if(e.key === "Left" || e.key === "ArrowLeft") {
+            leftPressed = true;
+        }
+        else if(e.key === "Up" || e.key === "ArrowUp"){
+            UpPressed = true;
+        }
+        else if(e.key === "Down" ||e.key === "ArrowDown" ){
+            DownPressed = true;
+        }
+    }
+
+    function keyUpHandler(e) {
+        if(e.key === "Right" || e.key === "ArrowRight") {
+            rightPressed = false;
+        }
+        else if(e.key === "Left" || e.key === "ArrowLeft") {
+            leftPressed = false;
+        }
+        else if(e.key === "Up" || e.key === "ArrowUp"){
+            UpPressed = false;
+        }
+        else if(e.key === "Down" ||e.key === "ArrowDown" ){
+            DownPressed = false;
+        }
+    }
+
+    var canva1=document.getElementById("C1");
+    var ctx=canva1.getContext("2d");
+
+    var pos=0;
+
+
+    function getRandom(min,max){
+        return Math.floor(Math.random()*(max-min+1))+min;
+    };
+
+    var x = getRandom(100,700),y = getRandom(100,500),size=getRandom(30,60);
+    var dx = 0 , dy=0;
+
+
+
+    var socket = io.connect();
+
+    socket.emit('new', {'x':x,'y':y,'size':size});
+
+    socket.on('pos', function(data){
+        pos = data.pos;
+        console.log(data.pos);
+    });
+
+    socket.on('balls', function(data){
+        balls = data.balls;
+      //  console.log(balls);
+    });
+
+    setInterval(function () {
+        socket.emit('client_data', {'id':pos,'x':x,'y':y,'dx':dx,'dy':dy});
+    }, 15);
+
+</script>
+
+</body>
+</html>
