@@ -86,6 +86,7 @@ const func = function(socket) {
     socket.on('new', function(data) {
         balls.push(new ball(balls.length,data.x,data.y,data.size,data.color,socket.id));
 
+
     });
 
     setInterval(function () {
@@ -97,6 +98,10 @@ const func = function(socket) {
         balls[data.id].y=data.y;
         balls[data.id].dx=data.dx;
         balls[data.id].dy=data.dy;
+        if(data.name!=="null"){
+            balls[data.id].sid=data.name;
+        }
+
     });
 
     socket.on('disconnect', function() {

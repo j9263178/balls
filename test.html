@@ -7,27 +7,46 @@
         * { padding: 0; margin: 0; }
         canvas { background: #363c45; display: block; margin: 0 auto; }
     </style>
-
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 </head>
 <body>
 <canvas id="canvas" width="800" height="600"></canvas>
+
+<p id="test">HIHIHIHIHIHIHIHIHIH</p>
 <script>
     var canvas = document.getElementById('canvas'),
         ctx = canvas.getContext('2d');
         image = new Image();
 
     image.onload = function() {
-        var w = this.width,
-            h = this.height;
+        var w = this.width/3,
+            h = this.height/3;
 
         canvas.width = w;
         canvas.height = h;
         ctx.drawImage(this, 0, 0, w, h);
-        ctx.fillText('Mood', 163, 191);
     }
 
     image.src = '76046474.jpg';
+    $('#canvas').on('click',function() {
+        $('#test').innerText="HOly shit!";
+    })
+    console.log($('#test').length);
+
+    function func() {
+        var shit=document.createElement("input");
+        document.body.appendChild(shit);
+        document.getElementById("test").innerHTML="wtf";
+    }
+
+    swal("Here's the title!", "...and here's the text!");
 
 </script>
+
+
+<button onclick="func()" >fuck</button>
+
+
 </body>
 </html>

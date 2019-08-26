@@ -13,6 +13,7 @@
     <meta charset="utf-8" />
     <title>asshole</title>
     <script src="/socket.io/socket.io.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <style>
         * { padding: 0; margin: 0; }
         canvas { background: #363c45; display: block; margin: 0 auto; }
@@ -20,10 +21,52 @@
 
 </head>
 <body>
-<h1><td align="center">上下左右</td></h1>
+
 <canvas id="C1" width="800" height="600"></canvas>
 
 <script>
+
+    var name="null";
+
+    swal( {title:"Ball shits here!",text: "Use Up,Down,Left and Right!",
+        buttons: {
+            defeat: {text: "tell u something!",
+                    value:"name"},
+
+            catch: {
+                text: "Just Set me free!",
+                value: "go",
+            },
+
+        },
+    })
+        .then((value) => {
+            switch (value) {
+
+                case "go":
+                    swal("Enjoy!","And there's a weird name 4 u!","success");
+                    break;
+
+                case "name":
+
+                    swal("What r u?", {
+                        content: "input",
+                    })
+                        .then((value) => {
+                            swal("Enjoy!","And stay In the box plx.","success");
+                            name=(value);
+                            console.log(name);
+                        });
+
+                    break;
+
+                default:
+                    swal("Alright","I didn't expect that!","success");
+            }
+        });
+
+
+
 
 
     var balls =[];
@@ -78,7 +121,7 @@
              ctx.fillStyle = "#fff6fc";
              ctx.font = "20pt Arial";
           //   ctx.fillText("balls[" + ball.id + "]", ball.x - 50, ball.y - 50);
-             ctx.fillText("" + ball.sid , ball.x - 100, ball.y - 40);
+             ctx.fillText("" + ball.sid , ball.x - 80, ball.y - 40);
          }
 
      }
@@ -172,7 +215,7 @@
     });
 
     send = function () {
-            if(done) {socket.emit('client_data', {'id': mypos, 'x': x, 'y': y, 'dx': dx, 'dy': dy});}
+            if(done) {socket.emit('client_data', {'id': mypos, 'x': x, 'y': y, 'dx': dx, 'dy': dy,'name':name});}
             else{console.log("FUCK!")}
     }
     setInterval(send, 12);
