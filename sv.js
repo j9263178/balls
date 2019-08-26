@@ -55,6 +55,7 @@ io.listen(server); // 開啟 Socket.IO 的 listener
 
 
 var ball = function (id,x, y,size,color,sid) {
+    this.words="...";
     this.sid=sid;
     this.color=color;
     this.online=true;
@@ -100,6 +101,9 @@ const func = function(socket) {
         balls[data.id].dy=data.dy;
         if(data.name!=="null"){
             balls[data.id].sid=data.name;
+        }
+        if(data.words!=="null"){
+            balls[data.id].words=data.words;
         }
 
     });

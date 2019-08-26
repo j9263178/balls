@@ -27,7 +27,7 @@
 <script>
 
     var name="null";
-
+    var words="...";
     swal( {title:"Ball shits here!",text: "Use Up,Down,Left and Right!",
         buttons: {
             defeat: {text: "tell u something!",
@@ -122,6 +122,8 @@
              ctx.font = "20pt Arial";
           //   ctx.fillText("balls[" + ball.id + "]", ball.x - 50, ball.y - 50);
              ctx.fillText("" + ball.sid , ball.x - 80, ball.y - 40);
+             ctx.font = "16pt Arial";
+             ctx.fillText("" + ball.words , ball.x - 80, ball.y - 15);
          }
 
      }
@@ -155,6 +157,16 @@
         }
         else if(e.key === "Down" ||e.key === "ArrowDown" ){
             DownPressed = true;
+
+        }
+        else if(e.key === "Shift"){
+            swal("Say something??", {
+                content: "input",
+            })
+                .then((value2) => {
+                    swal("Great!","I hope those are not some dirty.","success");
+                    words=(value2);
+                });
         }
     }
 
@@ -215,7 +227,7 @@
     });
 
     send = function () {
-            if(done) {socket.emit('client_data', {'id': mypos, 'x': x, 'y': y, 'dx': dx, 'dy': dy,'name':name});}
+            if(done) {socket.emit('client_data', {'id': mypos, 'x': x, 'y': y, 'dx': dx, 'dy': dy,'name':name,'words':words});}
             else{console.log("FUCK!")}
     }
     setInterval(send, 12);
