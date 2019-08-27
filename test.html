@@ -3,49 +3,113 @@
 <head>
     <meta charset="utf-8" />
     <title>Yest</title>
-    <style>
-        * { padding: 0; margin: 0; }
-        canvas { background: #363c45; display: block; margin: 0 auto; }
-    </style>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="path/to/p5.dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.6.0/p5.js"></script>
+
 </head>
-<body>
-<canvas id="canvas" width="800" height="600"></canvas>
+<body style="background-color:gray;">
 
-<p id="test">HIHIHIHIHIHIHIHIHIH</p>
 <script>
-    var canvas = document.getElementById('canvas'),
-        ctx = canvas.getContext('2d');
-        image = new Image();
+    swal("Welcome!","Press Control.");
 
-    image.onload = function() {
-        var w = this.width/3,
-            h = this.height/3;
+    var drops = [];
+    var players = [];
 
-        canvas.width = w;
-        canvas.height = h;
-        ctx.drawImage(this, 0, 0, w, h);
+    player = function (word,x,y) {
+        this.word= word;
+
+        this.x=x;
+        this.y=y;
+    };
+
+    function preload() {
+        taipei = loadFont('TaipeiSansTCBeta-Regular.ttf');
     }
 
-    image.src = '76046474.jpg';
-    $('#canvas').on('click',function() {
-        $('#test').innerText="HOly shit!";
-    })
-    console.log($('#test').length);
+    function setup() {
+      //  ele = createAudio('高雄發大財.mp3');
 
-    function func() {
-        var shit=document.createElement("input");
-        document.body.appendChild(shit);
-        document.getElementById("test").innerHTML="wtf";
+      //  ele.autoplay(true);
+
+        createCanvas(1500, 1024);
+        for (var i = 0; i < 500; i++) {
+
+            drops[i] = new Drop();
+        }
+
     }
 
-    swal("Here's the title!", "...and here's the text!");
+    function draw() {
+        background(100,100,100);
+        for (var i = 0; i < drops.length; i++) {
+            drops[i].fall();
+            drops[i].show();
+
+
+        }
+        for(let player of players){
+            textFont(taipei);
+            textSize(56);
+            fill('#ffffff');
+            strokeWeight(0);
+            text(String(player.word), player.x, player.y);
+        }
+    }
+
+
+    function Drop() {
+        this.x = random(width);
+        this.y = random(-500, -50);
+        this.z = random(0, 6);
+        this.len = map(this.z, 0, 20, 10, 20);
+        this.yspeed = map(this.z, 0, 20, 1, 20);
+
+        this.fall = function () {
+            this.y = this.y + this.yspeed;
+            var grav = map(this.z, 0, 20, 0, 0.2);
+            this.yspeed = this.yspeed + grav;
+
+            if (this.y > height) {
+                this.y = random(-200, -100);
+                this.yspeed = map(this.z, 0, 20, 4, 10);
+            }
+        }
+
+        this.show = function () {
+            var thick = map(this.z, 0, 20, 1, 3);
+            strokeWeight(thick);
+            stroke(238, 243, 216);
+            line(this.x, this.y, this.x, this.y + this.len);
+        }
+    }
+
+
+
+
+
+    document.addEventListener("keydown", keyDownHandler, false);
+
+    function getRandom(min,max){
+        return Math.floor(Math.random()*(max-min+1))+min;
+    };
+
+    function keyDownHandler(e) {
+        if(e.key === "Control") {
+             players.push(new player("發財!",getRandom(100,1000),getRandom(100,1000)));
+
+        }
+    };
+
+
+
 
 </script>
 
 
-<button onclick="func()" >fuck</button>
+
+
 
 
 </body>

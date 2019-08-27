@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>p5.js</title>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.6.0/p5.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="path/to/p5.dom.js"></script>
+    <script src="p5.play-master/lib/p5.play.js" type="text/javascript"></script>
+
+
+</head>
+<body style="background-color:gray;">
+
+
+<script>
+    //Controlling animations
+    //click, press and hold to see different behaviors
+    //var circle, explode, sleep, glitch;
+    var things=[];
+    var hm= {};
+    var dx=0,dy=0,mypos=0;
+
+
+    function preload() {
+        sleep = loadAnimation('assets/asterisk_stretching0001.png', 'assets/asterisk_stretching0008.png');
+
+        circle = loadAnimation('assets/asterisk_circle0000.png', 'assets/asterisk_circle0008.png');
+        //by default animations loop but it can be changed
+        circle.looping = false;
+
+        explode = loadAnimation('assets/asterisk_explode0001.png', 'assets/asterisk_explode0011.png');
+
+        glitch = loadAnimation('assets/asterisk.png', 'assets/triangle.png', 'assets/square.png', 'assets/cloud.png', 'assets/star.png', 'assets/mess.png', 'assets/monster.png');
+        //by default an animation plays but you may not want that
+
+        glitch.playing = false;
+
+        hm['1'] = circle;
+        hm['2'] = explode;
+        hm['3'] = sleep;
+        hm['4'] = glitch;
+
+    }
+
+
+
+
+    function setup() {
+        createCanvas(1024, 768);
+    }
+
+    function draw() {
+        background('gray');
+
+        if(keyDown('w'))
+            dx += 5;
+        if(keyDown('d'))
+            dx -= 5;
+        if(keyDown('a'))
+            dy -= 5;
+        if(keyDown('s'))
+            dy += 5;
+
+        //playing an pausing an animation
+        if(mouseIsPressed)
+            sleep.play();
+        else
+            sleep.stop();
+
+        //reading and changing the current frame
+        if(explode.getFrame()===explode.getLastFrame())
+            explode.changeFrame(7);
+
+        //playing backward or forward toward a specific frame
+        //returns to the initial frame if click and hold
+        if(mouseIsPressed)
+            circle.goToFrame(0);
+        else
+            circle.goToFrame(circle.getLastFrame());
+
+
+        for(let thing of things){
+        thing.x+=thing.dx;
+        thing.y+=thing.dy;
+        textSize(24);
+        fill('#ffffff');
+        strokeWeight(0);
+        text(""+thing.sid, thing.x-100, thing.y-50);
+        animation(hm[thing.ani], thing.x, thing.y);
+        }
+
+    }
+
+    function mousePressed() {
+        //rewind on mouse pressed - change frame to 0
+        explode.rewind();
+        //move ahead one frame
+        glitch.nextFrame();
+        //glitch.previousFrame();
+    }
+
+
+    //socket things goes here:
+    var socket = io.connect();
+
+    socket.on('pos', function(data){  //get self index in things
+        mypos = data.pos;
+    });
+
+
+    var done=false;
+
+    socket.on('update', function(data){  //get updated data from sv
+        things = data.things;
+        //  console.log(balls);
+        done=true;
+    });
+
+    setInterval(function () {   //send data to sv
+        if(done)
+            socket.emit('client_data', {'id': mypos,'dx': dx, 'dy': dy});
+    }, 12);
+
+</script>
+
+</body>
+</html>
